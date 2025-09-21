@@ -21,7 +21,8 @@ public class LimelightServoTracking extends LinearOpMode {
     private static final double SERVO_CENTER = 0.5; // Center position
     private static final double SERVO_MIN = 0.0;
     private static final double SERVO_MAX = 1.0;
-    private static final double TRACK_KP = 0.0005; // Proportional gain (tune this)
+    //private static final double TRACK_KP = 0.0005; // Proportional gain (tune this)
+    PIDController pid = new PIDController(0.05, 0.0, 0.01); // P, I, D
 
     private double servoPosition = SERVO_CENTER;
 
@@ -73,7 +74,8 @@ public class LimelightServoTracking extends LinearOpMode {
 
                     if (fr.getFiducialId() == 24 ) {
                         // Apply proportional control
-                        double correction = TRACK_KP * tx;
+                        double correction = pid.calculate(tx);
+                        //double correction = TRACK_KP * tx;
                         servoPosition -= correction; // Reverse if needed (depends on orientation)
                         telemetry.addData("correction Position", "%.2f", correction);
                         // Clip to servo bounds
@@ -85,7 +87,8 @@ public class LimelightServoTracking extends LinearOpMode {
                     }
                    else if (fr.getFiducialId() == 20 ) {
                         // Apply proportional control0
-                        double correction = TRACK_KP * tx;
+                       // double correction = TRACK_KP * tx;
+                        double correction = pid.calculate(tx);
                         servoPosition -= correction; // Reverse if needed (depends on orientation)
                         telemetry.addData("correction Position", "%.2f", correction);
                         // Clip to servo bounds
